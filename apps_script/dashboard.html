@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400..700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #ffffff; --ink: #0a0a0a; --ink-2: #525252; --ink-3: #737373;
+      --line: #ebebeb; --fill: #f4f4f4;
+      --accent: #c81e3a; --accent-tint: rgba(200, 30, 58, 0.08);
+      --sans: 'Geist', ui-sans-serif, system-ui, -apple-system, 'Helvetica Neue', sans-serif;
+      --mono: 'Geist Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+      --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; min-height: 100vh; background: var(--bg); color: var(--ink); font-family: var(--sans);
+      font-size: 16px; line-height: 1.45; -webkit-font-smoothing: antialiased;
+      padding: 32px 16px calc(40px + env(safe-area-inset-bottom, 0px));
+    }
+    .app { max-width: 560px; margin: 0 auto; display: grid; gap: 12px; }
+    .mono { font-family: var(--mono); font-size: 11.5px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+
+    header { text-align: center; margin-bottom: 12px; }
+    h1 { font-size: clamp(48px, 16vw, 104px); font-weight: 600; line-height: 1; letter-spacing: -0.05em; margin: 0 0 12px; white-space: nowrap; }
+    .lede { font-size: clamp(19px, 2.2vw, 26px); font-weight: 500; letter-spacing: -0.015em; color: var(--ink-2); margin: 0 0 10px; text-wrap: balance; }
+    .lede em { font-style: normal; color: var(--accent); }
+    .stale { background: var(--accent-tint); color: var(--accent); border-radius: 12px; padding: 12px 16px; margin-top: 12px; font-size: 15px; font-weight: 500; }
+
+    .card { display: flex; flex-direction: column; min-width: 0; container-type: inline-size;
+      border: 1px solid var(--line); border-radius: 16px; padding: 20px 18px 18px; text-align: center; }
+    .plate-head { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 6px 8px; }
+    .card-title { font-size: 17px; font-weight: 500; color: var(--ink-2); }
+    .pill { font-size: 12px; font-weight: 500; padding: 3px 10px; border-radius: 99px; white-space: nowrap; }
+    .pill.ok { background: var(--fill); color: var(--ink); }
+    .pill.warn { background: var(--accent-tint); color: var(--accent); }
+    .pill.idle { background: var(--fill); color: var(--ink-3); }
+    .hero { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 28px 0; }
+    /* sized from the column's width so seven characters (100,000 lux) still fit */
+    .big { font-size: min(29cqw, 112px); font-weight: 600; line-height: 1; letter-spacing: -0.045em;
+      font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .big.long { font-size: min(24cqw, 96px); }
+    .big small { font-size: 0.32em; font-weight: 500; color: var(--ink-3); letter-spacing: 0; margin-left: 3px; }
+    .big.stack small { display: block; margin: 6px 0 0; font-size: 20px; }
+    .none { font-size: 32px; font-weight: 500; letter-spacing: -0.02em; line-height: 1.3; color: var(--ink-3); }
+    .note { font-size: 15px; color: var(--ink-2); margin-top: 12px; text-wrap: balance; }
+    .headline { font-size: 22px; font-weight: 600; line-height: 1.35; letter-spacing: -0.015em; text-wrap: balance;
+      overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 6; }
+
+    .recent { border-top: 1px solid var(--line); padding-top: 12px; min-height: 64px; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: baseline; padding: 3px 0;
+      font-size: 15px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .row .mono { text-align: right; }
+    .row .value { text-align: left; }
+    .gap { color: var(--ink-3); }
+    .decision { padding: 6px 0; }
+    .decision p { margin: 2px 0 0; font-size: 14px; color: var(--ink-2); overflow: hidden;
+      display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+    .empty { color: var(--ink-2); font-size: 15px; }
+    .more { display: block; margin: 12px auto 0; font: inherit; font-size: 14px; font-weight: 500; color: var(--ink);
+      background: var(--fill); border: 0; border-radius: 99px; padding: 7px 18px; cursor: pointer; transition: background-color 160ms ease; }
+    @media (hover: hover) { .more:hover { background: #e8e8e8; } }
+    .more:focus-visible, .close:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+    #app.failed .card { display: none; }
+
+    dialog { width: min(480px, calc(100vw - 32px)); max-height: min(85vh, 720px); padding: 0; border: 0; border-radius: 16px;
+      background: var(--bg); color: var(--ink); overflow: hidden; }
+    dialog[open] { display: flex; flex-direction: column; }
+    dialog::backdrop { background: rgba(10, 10, 10, 0.35); }
+    .log-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; padding: 18px 18px 12px; border-bottom: 1px solid var(--line); }
+    .log-title { font-size: 18px; font-weight: 600; letter-spacing: -0.01em; }
+    .close { font: inherit; font-size: 14px; color: var(--ink); background: var(--fill); border: 0; border-radius: 99px; padding: 5px 14px; cursor: pointer; }
+    .log-body { overflow-y: auto; padding: 0 18px 18px; min-height: 120px; }
+    .log-day { position: sticky; top: 0; background: var(--bg); padding: 12px 0 6px; font-size: 13px; font-weight: 600; }
+    .log-row { display: flex; justify-content: space-between; gap: 12px; padding: 4px 0; font-variant-numeric: tabular-nums; font-size: 15px; }
+    .log-entry { padding: 12px 0; border-top: 1px solid var(--line); }
+    .log-entry:first-child { border-top: 0; }
+    .log-entry .meta { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 4px; }
+    .log-entry p { margin: 0; font-size: 15px; }
+    .log-body .empty { display: block; padding-top: 16px; }
+
+    .reveal { opacity: 0; }
+    .ready .reveal { animation: rise 320ms var(--ease-out) forwards; animation-delay: calc(var(--i, 0) * 55ms); }
+    @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+    @media (prefers-reduced-motion: reduce) {
+      .ready .reveal { animation: fade 200ms ease forwards; animation-delay: 0ms; }
+      @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+    }
+
+    /* the columns need about 260px each to hold a reading, so they step 1, 2, then 4 */
+    @media (min-width: 640px) {
+      .app { max-width: 960px; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+      header { grid-column: 1 / -1; }
+    }
+    @media (min-width: 1100px) {
+      body { padding: 28px 32px; }
+      .app { max-width: 1560px; min-height: calc(100vh - 56px); grid-template-columns: repeat(4, minmax(0, 1fr));
+        grid-template-rows: auto minmax(min-content, 1fr); }
+    }
+  </style>
+</head>
+<body>
+  <div class="app" id="app">
+    <header class="reveal" style="--i:0">
+      <h1>root-cause</h1>
+      <p class="lede">One <em>radish</em>, watched by sensors and AI agents.</p>
+      <div id="stale"></div>
+    </header>
+
+    <section class="card reveal" style="--i:1" id="soil-card"></section>
+    <section class="card reveal" style="--i:2" id="temp-card"></section>
+    <section class="card reveal" style="--i:3" id="light-card"></section>
+    <section class="card reveal" style="--i:4" id="agent-card"></section>
+  </div>
+
+  <dialog id="sensor-log" aria-labelledby="sensor-log-title">
+    <div class="log-head">
+      <div>
+        <div class="log-title" id="sensor-log-title"></div>
+        <div class="mono" id="sensor-log-sum"></div>
+      </div>
+      <form method="dialog"><button class="close">Close</button></form>
+    </div>
+    <div class="log-body" id="sensor-log-body"></div>
+  </dialog>
+
+  <script>
+    var STALE_MIN = 90; // same limit as the "no reading" check in Code.gs
+    var RECENT = 3;
+
+    var SENSORS = {
+      soil: { title: 'Soil moisture', key: 'soil_pct', show: function (v) { return Math.round(v) + '%'; } },
+      temp: { title: 'Temperature', key: 'temp_c', show: function (v) { return v.toFixed(1) + '°C'; } },
+      light: { title: 'Light', key: 'lux', show: function (v) { return Math.round(v).toLocaleString() + ' lux'; } }
+    };
+
+    function num(v) { return typeof v === 'number' ? v : null; }
+    function esc(s) {
+      return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+      });
+    }
+    function minutesAgo(iso) { return iso ? (Date.now() - new Date(iso).getTime()) / 60000 : null; }
+    function ago(iso) {
+      var m = minutesAgo(iso);
+      if (m == null) return 'no reading yet';
+      if (m < 2) return 'just now';
+      if (m < 90) return Math.round(m) + ' min ago';
+      if (m < 2880) return Math.round(m / 60) + ' h ago';
+      return new Date(iso).toLocaleDateString();
+    }
+    function when(iso) { return new Date(iso).toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }); }
+    function pill(text, cls) { return '<span class="pill ' + cls + '">' + text + '</span>'; }
+
+    function big(text, unit, cls) {
+      if (text == null) return '<div class="none">No reading</div>';
+      return '<div class="big' + (text.length > 6 ? ' long' : '') + (cls ? ' ' + cls : '') + '">' + esc(text) + '<small>' + unit + '</small></div>';
+    }
+
+    function sensorCard(id, badge, value, note, hist) {
+      var s = SENSORS[id];
+      var rows = hist.slice(-RECENT).reverse().map(function (r) {
+        var v = num(r[s.key]);
+        return '<div class="row"><span class="mono">' + esc(when(r.time)) + '</span>' +
+          (v == null ? '<span class="value gap">No reading</span>' : '<span class="value">' + esc(s.show(v)) + '</span>') + '</div>';
+      }).join('');
+      document.getElementById(id + '-card').innerHTML =
+        '<div class="plate-head"><span class="card-title">' + s.title + '</span>' + badge + '</div>' +
+        '<div class="hero">' + value + '<div class="note">' + note + '</div></div>' +
+        '<div class="recent">' + (rows || '<span class="empty">Readings start at planting.</span>') + '</div>' +
+        (rows ? '<button class="more" data-log="' + id + '" aria-haspopup="dialog">View more</button>' : '');
+    }
+
+    var dialog = document.getElementById('sensor-log');
+    var logBody = document.getElementById('sensor-log-body');
+    var logSum = document.getElementById('sensor-log-sum');
+    var logTitle = document.getElementById('sensor-log-title');
+    var openSensor = null, readings = null, loading = false, decisions = [];
+
+    function fillLog() {
+      var s = SENSORS[openSensor];
+      var vals = readings.map(function (r) { return num(r[s.key]); }).filter(function (v) { return v != null; });
+      logSum.textContent = !vals.length ? 'No readings yet' : vals.length.toLocaleString() + (vals.length === 1 ? ' reading' : ' readings') +
+        '. Low ' + s.show(Math.min.apply(null, vals)) + ', high ' + s.show(Math.max.apply(null, vals)) + '.';
+      if (!readings.length) { logBody.innerHTML = '<span class="empty">Readings start at planting.</span>'; return; }
+      var lastDay = '';
+      logBody.innerHTML = readings.slice().reverse().map(function (r) {
+        var d = new Date(r.time), v = num(r[s.key]);
+        var day = d.toLocaleDateString([], { month: 'short', day: 'numeric' });
+        var head = day === lastDay ? '' : '<div class="log-day">' + esc(day) + '</div>';
+        lastDay = day;
+        return head + '<div class="log-row"><span class="mono">' + esc(d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })) + '</span>' +
+          (v == null ? '<span class="gap">No reading</span>' : '<span>' + esc(s.show(v)) + '</span>') + '</div>';
+      }).join('');
+      logBody.scrollTop = 0;
+    }
+
+    function showLog(id) {
+      openSensor = id;
+      logTitle.textContent = SENSORS[id].title;
+      dialog.showModal();
+      if (readings) { fillLog(); return; }
+      logSum.textContent = '';
+      logBody.innerHTML = '<span class="empty">Loading…</span>';
+      if (loading) return;
+      loading = true;
+      google.script.run.withSuccessHandler(function (rows) {
+        loading = false;
+        readings = rows;
+        if (openSensor) fillLog();
+      }).withFailureHandler(function () {
+        loading = false;
+        if (openSensor) logBody.innerHTML = '<span class="empty">Couldn\'t load the readings. Close this and try again.</span>';
+      }).getReadings();
+    }
+
+    function showDecisions() {
+      openSensor = null;
+      logTitle.textContent = 'Agent decisions';
+      logSum.textContent = decisions.length.toLocaleString() + (decisions.length === 1 ? ' decision' : ' decisions');
+      logBody.innerHTML = decisions.map(function (d) {
+        return '<div class="log-entry"><div class="meta mono"><span>' + esc(when(d.time)) + '</span><span>' + d.tag + '</span></div><p>' + esc(d.text) + '</p></div>';
+      }).join('');
+      dialog.showModal();
+      logBody.scrollTop = 0;
+    }
+
+    dialog.addEventListener('close', function () { openSensor = null; });
+    dialog.addEventListener('click', function (e) { if (e.target === dialog) dialog.close(); }); // the backdrop
+    document.getElementById('app').addEventListener('click', function (e) {
+      var btn = e.target.closest('[data-log]');
+      if (!btn) return;
+      if (btn.dataset.log === 'agent') showDecisions(); else showLog(btn.dataset.log);
+    });
+
+    // Sensor alerts end with a repair note for the grower, and older rows use a long dash.
+    function decision(row) {
+      var alert = /sensor reading/i.test(row.message);
+      var text = alert ? String(row.message).replace(/\s*Check (that|the) .*$/, '') : String(row.message);
+      return {
+        time: row.time,
+        tag: !row.action_needed ? 'Checked' : alert ? 'Sensor alert' : 'Advised',
+        text: text.replace(/\s*—\s*/g, ': ')
+      };
+    }
+
+    function agentCard(planted) {
+      var latest = decisions[0];
+      var rest = decisions.slice(1, RECENT + 1).map(function (d) {
+        return '<div class="decision"><span class="mono">' + esc(when(d.time)) + '</span><p>' + esc(d.text) + '</p></div>';
+      }).join('');
+      document.getElementById('agent-card').innerHTML =
+        '<div class="plate-head"><span class="card-title">Agent decisions</span></div>' +
+        '<div class="hero">' + (latest
+          ? '<div class="headline">' + esc(latest.text) + '</div><div class="note">' + latest.tag + ' on ' + esc(when(latest.time)) + '</div>'
+          : '<div class="none">No decisions yet</div><div class="note">' + (planted ? 'The agents have not run yet.' : 'Agent decisions start at planting.') + '</div>') + '</div>' +
+        '<div class="recent">' + rest + '</div>' +
+        (latest ? '<button class="more" data-log="agent" aria-haspopup="dialog">View more</button>' : '');
+    }
+
+    function render(data) {
+      var l = data.latest || {};
+      var soil = num(l.soil_pct), lux = num(l.lux), temp = num(l.temp_c);
+      var band = data.soil_band, t = data.temp_targets;
+      var hist = data.history || [];
+
+      var age = minutesAgo(l.time);
+      document.getElementById('stale').innerHTML = age != null && age > STALE_MIN
+        ? '<div class="stale">Sensors offline. Last reading ' + esc(ago(l.time)) + '.</div>' : '';
+
+      var soilState = soil == null || !band ? ['No target yet', 'idle'] : soil < band.min ? ['Low', 'warn'] : soil > band.max ? ['High', 'warn'] : ['On target', 'ok'];
+      sensorCard('soil', pill(soilState[0], soilState[1]), big(soil == null ? null : String(Math.round(soil)), '%'),
+        band ? 'Target ' + band.min + '-' + band.max + '% for this stage' : 'Target is set at planting', hist);
+
+      var tempState = temp == null || !t ? ['No reading', 'idle'] : temp > t.bolt_risk_above ? ['Too hot', 'warn'] : ['OK', 'ok'];
+      sensorCard('temp', pill(tempState[0], tempState[1]), big(temp == null ? null : temp.toFixed(1), '°C'),
+        t ? 'Best ' + t.optimal_min + '-' + t.optimal_max + '°C. Above ' + t.bolt_risk_above + '°C it can flower early and ruin the root.' : '', hist);
+
+      sensorCard('light', '', big(lux == null ? null : Math.round(lux).toLocaleString(), 'lux', 'stack'), 'Full sun is around 100,000 lux.', hist);
+
+      decisions = (data.agent_log || []).map(decision);
+      agentCard(!!data.stage);
+
+      document.getElementById('app').classList.add('ready');
+    }
+
+    google.script.run.withSuccessHandler(render).withFailureHandler(function () {
+      document.getElementById('stale').innerHTML = '<div class="stale">Couldn\'t load the plant data. Reload the page to try again.</div>';
+      document.getElementById('app').classList.add('ready', 'failed');
+    }).getDashboardData();
+  </script>
+</body>
+</html>

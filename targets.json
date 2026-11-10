@@ -1,0 +1,43 @@
+{
+  "_comment": "Every number the agents reason from, with its source. verify:true = no source found yet; don't trust it. Code.gs TARGETS mirrors this file.",
+  "water_mm_per_week": {
+    "value": 25,
+    "verify": false,
+    "source": "University of Minnesota Extension, Growing radishes: 'If the planting does not get one inch of rain each week, soak the soil thoroughly at least once a week.' https://extension.umn.edu/vegetables/growing-radishes"
+  },
+  "soil_pct": {
+    "germination": { "min": 70, "max": 90, "verify": true, "source": null },
+    "leaf_growth": { "min": 60, "max": 80, "verify": true, "source": null },
+    "bulbing":     { "min": 60, "max": 80, "verify": true, "source": null },
+    "note": "No published source can give these, because the % is this sensor's own dry-air-to-water scale, not soil water content. Set them from your soil during the dry run. What sources do say: keep soil 'uniformly moist ... but not wet' (Penn State PlantVillage, https://plantvillage.psu.edu/topics/radish/infos); 'uneven moisture can cause radishes to crack or split' (UMN Extension, above)."
+  },
+  "dli_mol_per_m2_day": {
+    "min": 12,
+    "max": 15,
+    "verify": false,
+    "source": "C. Currey (Iowa State), greenhouse hydroponic radish DLI trial: root diameter peaked at 12-15 mol/m2/d; cracked roots rose above 15. Summarized in Greenhouse Grower, https://www.greenhousegrower.com/?p=165409. Caveat: greenhouse cultivars 'Crunchy King' and 'Red Castle', not outdoor Cherry Belle."
+  },
+  "temp_c": {
+    "optimal_min": 10,
+    "optimal_max": 18,
+    "optimal_source": "Penn State PlantVillage: 'the optimum temperature for the growth of radishes is between 10 and 18°C (50-65°F).' https://plantvillage.psu.edu/topics/radish/infos",
+    "bolt_risk_above": 25,
+    "verify": true,
+    "bolt_source": null,
+    "bolt_note": "No authoritative source gives a bolting temperature. Texas A&M AgriLife says radishes prefer 40-70°F (4-21°C) (https://aggie-horticulture.tamu.edu/vegetable/files/2011/10/radish.pdf); gardening sites say they bolt above 80°F (27°C). 25 sits between those two, unsourced."
+  },
+  "stage_days": {
+    "germination": [0, 10],
+    "leaf_growth": [11, 15],
+    "bulbing": [16, 30],
+    "source": "Germination: 'Seedlings will emerge within ten days' (UMN Extension, above). End of season: Cherry Belle matures in 24 days (Botanical Interests, https://botanicalinterests.com/product/Cherry-Belle-Radish-Seeds); radish harvest 20-35 days after planting (Texas A&M, above).",
+    "verify": true,
+    "note": "The day-15 split between leaf growth and bulbing has no source. It doesn't change anything today, because both stages use the same soil band."
+  },
+  "lux_to_ppfd_sunlight_factor": {
+    "value": 54,
+    "verify": false,
+    "note": "PPFD (umol/m2/s) = lux / 54, sunlight only.",
+    "source": "Apogee Instruments PPFD-to-lux table, 'Sunlight | 54' (https://www.apogeeinstruments.com/conversion-ppfd-to-lux/), from Thimijan & Heins 1983, HortScience 18:818-822."
+  }
+}

@@ -1,0 +1,7 @@
+# Real Wi-Fi password, webhook URL and shared secret. Copy secrets.example.h to secrets.h locally.
+esp32/sensor_logger/secrets.h
+
+# Links this folder to the live Apps Script project (deploy tool config).
+apps_script/.clasp.json
+
+.DS_Store
