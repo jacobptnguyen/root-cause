@@ -89,7 +89,7 @@ function currentStage() {
   return 'bulbing'; // past day 30, keep using the last band
 }
 
-function getForecast() {
+function getForecast_() {
   const lat = PROPS.getProperty('LAT');
   const lon = PROPS.getProperty('LON');
   const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}` +
@@ -98,7 +98,7 @@ function getForecast() {
   return JSON.parse(resp.getContentText());
 }
 
-function callClaude(prompt, model = 'claude-haiku-4-5-20251001', maxTokens = 200) {
+function callClaude_(prompt, model = 'claude-haiku-4-5-20251001', maxTokens = 200) {
   const resp = UrlFetchApp.fetch('https://api.anthropic.com/v1/messages', {
     method: 'post',
     contentType: 'application/json',
@@ -146,8 +146,8 @@ function badCites(cites, facts) {
     .map(([k]) => k);
 }
 
-function ask(name, facts, tail) {
-  return parseAgentJson(callClaude(`${AGENTS[name]} ${AGENT_RULES}\nYour facts: ${JSON.stringify(facts)}\n${tail}`));
+function ask_(name, facts, tail) {
+  return parseAgentJson(callClaude_(`${AGENTS[name]} ${AGENT_RULES}\nYour facts: ${JSON.stringify(facts)}\n${tail}`));
 }
 
 function hoursSinceWatering() {
@@ -203,13 +203,20 @@ function onCooldown() {
   return !!last && Date.now() - new Date(last[0]).getTime() < 5 * 3600 * 1000;
 }
 
-function sendPing(message, footer) {
+function sendPing_(message, footer) {
   MailApp.sendEmail(Session.getEffectiveUser().getEmail(), 'root-cause: update',
     footer ? message + '\n\n' + footer : message);
   AGENT_LOG_SHEET.appendRow([new Date(), true, message]);
 }
 
-function checkAndAdvise() {
+// Any dashboard visitor can call a public function from the browser (names ending in _ are blocked),
+// so the two scheduled jobs only run when called by one of this project's own triggers.
+function fromTrigger_(e) {
+  return !!e && ScriptApp.getProjectTriggers().some(t => t.getUniqueId() === e.triggerUid);
+}
+
+function checkAndAdvise(e) {
+  if (!fromTrigger_(e)) return;
   const rows = logRows();
   if (rows.length < 1) return;
   const [time, soilPct, lux, tempC] = rows[rows.length - 1];
@@ -218,14 +225,14 @@ function checkAndAdvise() {
   const ageMin = (Date.now() - new Date(time).getTime()) / 60000;
   if (ageMin > 90) {
     if (!onCooldown()) {
-      sendPing(`No sensor reading for ${Math.round(ageMin)} min. Check the ESP32's power and Wi-Fi.`);
+      sendPing_(`No sensor reading for ${Math.round(ageMin)} min. Check the ESP32's power and Wi-Fi.`);
     }
     return;
   }
 
   const fault = sensorFault(tempC, lux);
   if (fault) {
-    if (!onCooldown()) sendPing(fault);
+    if (!onCooldown()) sendPing_(fault);
     return;
   }
 
@@ -245,7 +252,7 @@ function checkAndAdvise() {
 
   let forecast = null;
   try {
-    const f = getForecast();
+    const f = getForecast_();
     forecast = { rain: f.daily.precipitation_sum[0], maxTemp: f.daily.temperature_2m_max[0] };
   } catch (err) {
     // keep going without the forecast agent rather than fail the whole check
@@ -257,7 +264,7 @@ function checkAndAdvise() {
 
   const r1 = {};
   names.forEach(n => {
-    const v = ask(n, facts[n], ROUND1_TAIL);
+    const v = ask_(n, facts[n], ROUND1_TAIL);
     if (v && VERDICTS.includes(v.verdict)) r1[n] = v;
   });
   const summary = names.map(n => `${n}: ${r1[n] ? r1[n].verdict : 'no answer'}`).join(', ');
@@ -282,14 +289,14 @@ function checkAndAdvise() {
       `rain coming). Your own verdict being "fine" is not a contradiction, and watering is not a way to cool ` +
       `or heat anything. Anything outside your own facts is not yours to judge, so agree. Reply JSON only: ` +
       `{"vote":"agree|object","reason":"one sentence"}`;
-    const v = ask(n, facts[n], tail);
+    const v = ask_(n, facts[n], tail);
     if (v && v.vote === 'object') objections.push(`${n}: ${v.reason}`);
   });
   const readings = [['Soil', soilPct, '%'], ['Temp', tempC, '°C'], ['Light', lux, ' lux']]
     .filter(([, v]) => typeof v === 'number').map(([k, v, u]) => `${k} ${Math.round(v * 10) / 10}${u}`).join(' · ');
-  if (objections.length) return sendPing(`No action needed right now — ${objections.join(' ')}`, readings);
+  if (objections.length) return sendPing_(`No action needed right now — ${objections.join(' ')}`, readings);
 
-  sendPing(r1[acts[0]].action, readings);
+  sendPing_(r1[acts[0]].action, readings);
 }
 
 // Run by hand in the Apps Script editor: checks the pure parsing and cite logic, no API calls.
@@ -368,16 +375,17 @@ const REPORT_PROMPT = 'You write the daily report for one outdoor radish plant. 
   'what the next 3 days of weather mean for the plant, and whether anything needs doing (if nothing, say so). ' +
   'Use only the numbers below, never invent a reading or a target, and say so if data is missing.\n\n';
 
-function sendDailyReport() {
+function sendDailyReport(e) {
+  if (!fromTrigger_(e)) return;
   if (isPaused()) return;
   const since = Date.now() - 24 * 3600 * 1000;
   const rows = logRows().filter(r => r[0] instanceof Date && r[0].getTime() >= since);
   const pings = AGENT_LOG_SHEET.getDataRange().getValues()
     .filter(r => r[0] instanceof Date && r[0].getTime() >= since && r[1] === true).map(r => r[2]);
   let forecast = null;
-  try { forecast = getForecast().daily; } catch (err) { /* report goes out without it */ }
+  try { forecast = getForecast_().daily; } catch (err) { /* report goes out without it */ }
   const numbers = dailyReportText(rows, forecast, pings, currentStage());
-  const summary = callClaude(REPORT_PROMPT + numbers, REPORT_MODEL, 400);
+  const summary = callClaude_(REPORT_PROMPT + numbers, REPORT_MODEL, 400);
   MailApp.sendEmail(Session.getEffectiveUser().getEmail(), 'root-cause daily report',
     (summary ? summary + '\n\n--- the numbers ---\n' : '') + numbers);
 }

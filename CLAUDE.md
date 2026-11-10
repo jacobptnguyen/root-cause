@@ -44,8 +44,8 @@ Check during the build:
 - Only rows on or after `PLANT_DATE` in `Code.gs` appear. Dry-run data stays in the Sheet.
 - Publish from `apps_script/` with `clasp push -f`, then `clasp redeploy <id>` using the versioned
   deployment from `clasp deployments` (not @HEAD). Never make a new deployment: the URL would change
-  and the ESP32 would keep posting to the old code. That ID is part of the secret webhook URL, so keep
-  it out of tracked files.
+  and the ESP32 would keep posting to the old code. The URL is public in the README. The shared secret
+  is what stops anyone else from posting readings.
 - To pause every Claude call, set the `AI_PAUSED` Script Property to `true`.
 
 ## Rules

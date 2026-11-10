@@ -1,5 +1,13 @@
 # root-cause
 
+An ESP32 sensor rig on one outdoor radish, with Claude agents that read soil, temperature and the forecast and email you only when the plant needs action.
+
+> **Work in progress.** The software is live. The hardware build and planting are next.
+
+## [▶ Live Dashboard](https://script.google.com/macros/s/AKfycbx87wgBGKjBVAz4Uc2H4hLzqI2A1MCnMBKmojhJhEQtthP3l5ge9Ou7GQwwO7SQyPo8/exec)
+
+[Raw sensor data (Google Sheet)](https://docs.google.com/spreadsheets/d/13xQsMNJueMaNgMNqg7iakAz_-P6kCFDYvVGv3BodOFQ/edit?usp=sharing)
+
 ## Parts
 
 | # | Part | Picture | Link |
