@@ -26,7 +26,7 @@ An ESP32 sensor rig on one outdoor radish, with Claude agents that read soil, te
 | 12 | Aleric step drill bit set | <img src="photos/parts/12-step-drill-bits.jpg" alt="Aleric step drill bit set" width="200"> | [Amazon](https://www.amazon.com/dp/B08Y96Z669) |
 | 13 | GE Advanced Silicone, clear | <img src="photos/parts/13-silicone-sealant.jpg" alt="GE Advanced Silicone, clear" width="200"> | [Amazon](https://www.amazon.com/dp/B0H2G56HNK) |
 | 14 | 5V USB wall power brick | <img src="photos/parts/14-usb-power-brick.jpg" alt="5V USB wall power brick" width="200"> | [Amazon](https://www.amazon.com/dp/B0HDCGSXR4) |
-| 15 | Stover organic Cherry Belle radish seeds | <img src="photos/parts/15-radish-seeds.jpg" alt="Stover organic Cherry Belle radish seeds" width="200"> | [Home Depot]() |
+| 15 | Stover organic Cherry Belle radish seeds | <img src="photos/parts/15-radish-seeds.jpg" alt="Stover organic Cherry Belle radish seeds" width="200"> | Home Depot |
 | 16 | Miracle-Gro All Purpose Garden Soil, 0.75 cu ft | <img src="photos/parts/16-garden-soil.jpg" alt="Miracle-Gro All Purpose Garden Soil" width="200"> | [Home Depot](https://www.homedepot.com/p/Miracle-Gro-Garden-Soil-All-Purpose-0-75-cu-ft-for-In-Ground-Use-Gardens-and-Raised-Beds-Flowers-Vegetables-Trees-Shrubs-75030430/206553445) |
 
 Product names and logos in the photos belong to their owners.
