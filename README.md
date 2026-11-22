@@ -13,8 +13,8 @@ An ESP32 sensor rig on one outdoor radish, with Claude agents that read soil, te
 | # | Part | Picture | Link |
 |---|---|---|---|
 | 1 | Espressif ESP32-DevKitC dev board | <img src="photos/parts/01-esp32-devkitc.jpg" alt="Espressif ESP32-DevKitC dev board" width="200"> | [Amazon](https://www.amazon.com/dp/B087TNPQCV) |
-| 2 | Capacitive soil moisture sensor v1.2 | <img src="photos/parts/02-soil-moisture-sensor.jpg" alt="Capacitive soil moisture sensor v1.2" width="200"> | [Amazon](https://www.amazon.com/dp/B07Z43WM7F) |
-| 3 | NOYITO BH1750 light sensor | <img src="photos/parts/03-bh1750-light-sensor.jpg" alt="NOYITO BH1750 light sensor" width="200"> | [Amazon](https://www.amazon.com/dp/B07PNL13XM) |
+| 2 | DIYables capacitive soil moisture sensor, TLC555 timer | <img src="photos/parts/02-soil-moisture-sensor-tlc555.jpg" alt="DIYables capacitive soil moisture sensor" width="200"> | [Amazon](https://www.amazon.com/dp/B0F5NW8TJS) |
+| 3 | SHILLEHTEK GY-302 BH1750 light sensor, pre-soldered | <img src="photos/parts/03-bh1750-presoldered.jpg" alt="SHILLEHTEK GY-302 BH1750 light sensor" width="200"> | [Amazon](https://www.amazon.com/dp/B0CN55S7Z9) |
 | 4 | DS18B20 waterproof temperature probe | <img src="photos/parts/04-ds18b20-temp-probe.jpg" alt="DS18B20 waterproof temperature probe" width="200"> | [Amazon](https://www.amazon.com/dp/B07V2KS43L) |
 | 5 | Chanzon 4.7kΩ resistors | <img src="photos/parts/05-resistors-4k7.jpg" alt="Chanzon 4.7kΩ resistors" width="200"> | [Amazon](https://www.amazon.com/dp/B08QRZRRGB) |
 | 6 | ELEGOO 400-point breadboard kit | <img src="photos/parts/06-breadboard-400.jpg" alt="ELEGOO 400-point breadboard kit" width="200"> | [Amazon](https://www.amazon.com/dp/B0CYPVMK9J) |
@@ -27,9 +27,17 @@ An ESP32 sensor rig on one outdoor radish, with Claude agents that read soil, te
 | 13 | GE Advanced Silicone, clear | <img src="photos/parts/13-silicone-sealant.jpg" alt="GE Advanced Silicone, clear" width="200"> | [Amazon](https://www.amazon.com/dp/B0H2G56HNK) |
 | 14 | 5V USB wall power brick | <img src="photos/parts/14-usb-power-brick.jpg" alt="5V USB wall power brick" width="200"> | [Amazon](https://www.amazon.com/dp/B0HDCGSXR4) |
 | 15 | Stover organic Cherry Belle radish seeds | <img src="photos/parts/15-radish-seeds.jpg" alt="Stover organic Cherry Belle radish seeds" width="200"> | Home Depot |
-| 16 | Miracle-Gro All Purpose Garden Soil, 0.75 cu ft | <img src="photos/parts/16-garden-soil.jpg" alt="Miracle-Gro All Purpose Garden Soil" width="200"> | [Home Depot](https://www.homedepot.com/p/Miracle-Gro-Garden-Soil-All-Purpose-0-75-cu-ft-for-In-Ground-Use-Gardens-and-Raised-Beds-Flowers-Vegetables-Trees-Shrubs-75030430/206553445) |
+| 16 | Miracle-Gro Potting Mix, 25 qt | <img src="photos/parts/16-potting-mix.jpg" alt="Miracle-Gro Potting Mix" width="200"> | [Home Depot](https://www.homedepot.com/p/Miracle-Gro-Potting-Mix-Soil-25-qt-For-Container-Plants-Flowers-Vegetables-Shrubs-Feeds-up-to-6-Months-72781431/206457033) |
 
 Product names and logos in the photos belong to their owners.
+
+## Mistakes caught at the parts check
+
+| Part | Picture | Problem | Fix |
+|---|---|---|---|
+| Generic capacitive soil moisture sensor v1.2 | <img src="photos/parts/02-soil-moisture-sensor.jpg" alt="Generic capacitive soil moisture sensor v1.2" width="200"> | Its timer chip is an NE555, which needs at least 4.5 V and won't run reliably from the ESP32's 3.3 V. The listing never named the chip. | A sensor whose listing states a TLC555, which runs from 3.3 V. |
+| NOYITO BH1750 light sensor | <img src="photos/parts/03-bh1750-light-sensor.jpg" alt="NOYITO BH1750 light sensor" width="200"> | The header pins came loose, and this build has no soldering iron. | A GY-302 BH1750 sold with the pins already soldered. |
+| Miracle-Gro All Purpose Garden Soil | <img src="photos/parts/16-garden-soil.jpg" alt="Miracle-Gro All Purpose Garden Soil" width="200"> | It's made to mix into garden beds, not to fill a container. In a box it packs down and drains slowly, which stunts radish roots and keeps the soil readings high. | A potting mix labeled for container plants. |
 
 ## Credits
 
