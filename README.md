@@ -31,6 +31,14 @@ An ESP32 sensor rig on one outdoor radish, with Claude agents that read soil, te
 
 Product names and logos in the photos belong to their owners.
 
+## Wiring
+
+![Breadboard wiring for the ESP32, BH1750 light sensor, soil moisture sensor and DS18B20 probe](diagrams/breadboard-wiring.svg)
+
+Every hole along a + or − strip is the same connection, so the row a power wire sits in doesn't matter. The 4.7kΩ resistor pulls the probe's data line up to 3.3 V, which the DS18B20 needs to send readings.
+
+<img src="photos/build/wired-sensors.jpg" alt="The ESP32, breadboard, soil moisture sensor, BH1750 light sensor and DS18B20 probe wired together" width="600">
+
 ## Mistakes caught at the parts check
 
 | Part | Picture | Problem | Fix |
