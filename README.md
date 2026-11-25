@@ -39,13 +39,24 @@ Every hole along a + or − strip is the same connection, so the row a power wir
 
 <img src="photos/build/wired-sensors.jpg" alt="The ESP32, breadboard, soil moisture sensor, BH1750 light sensor and DS18B20 probe wired together" width="600">
 
-## Mistakes caught at the parts check
+Serial Monitor output from the sensor test. Soil raw drops when the sensor is gripped, lux drops when the light sensor is covered, and temperature rises when the probe is held:
+
+```
+soil raw=3184 (0%)  lux=34.1  temp=20.6C
+soil raw=2373 (34%)  lux=30.5  temp=20.6C
+soil raw=3213 (0%)  lux=14.4  temp=22.1C
+soil raw=3205 (0%)  lux=1.8  temp=24.2C
+soil raw=3205 (0%)  lux=39.5  temp=23.8C
+```
+
+## Mistakes caught during the build
 
 | Part | Picture | Problem | Fix |
 |---|---|---|---|
 | Generic capacitive soil moisture sensor v1.2 | <img src="photos/parts/02-soil-moisture-sensor.jpg" alt="Generic capacitive soil moisture sensor v1.2" width="200"> | Its timer chip is an NE555, which needs at least 4.5 V and won't run reliably from the ESP32's 3.3 V. The listing never named the chip. | A sensor whose listing states a TLC555, which runs from 3.3 V. |
 | NOYITO BH1750 light sensor | <img src="photos/parts/03-bh1750-light-sensor.jpg" alt="NOYITO BH1750 light sensor" width="200"> | The header pins came loose, and this build has no soldering iron. | A GY-302 BH1750 sold with the pins already soldered. |
 | Miracle-Gro All Purpose Garden Soil | <img src="photos/parts/16-garden-soil.jpg" alt="Miracle-Gro All Purpose Garden Soil" width="200"> | It's made to mix into garden beds, not to fill a container. In a box it packs down and drains slowly, which stunts radish roots and keeps the soil readings high. | A potting mix labeled for container plants. |
+| Soil sensor wiring | | The AOUT wire was on ESP32 pin 32, but the sketch reads pin 34, so the soil reading stayed near 0 in the Serial Monitor test. | AOUT on pin 34. The reading jumped to about 3190 in dry air and dropped when the sensor was gripped. |
 
 ## Credits
 
