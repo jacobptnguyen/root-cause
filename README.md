@@ -56,7 +56,7 @@ soil raw=3205 (0%)  lux=39.5  temp=23.8C
 | Generic capacitive soil moisture sensor v1.2 | <img src="photos/parts/02-soil-moisture-sensor.jpg" alt="Generic capacitive soil moisture sensor v1.2" width="200"> | Its timer chip is an NE555, which needs at least 4.5 V and won't run reliably from the ESP32's 3.3 V. The listing never named the chip. | A sensor whose listing states a TLC555, which runs from 3.3 V. |
 | NOYITO BH1750 light sensor | <img src="photos/parts/03-bh1750-light-sensor.jpg" alt="NOYITO BH1750 light sensor" width="200"> | The header pins came loose, and this build has no soldering iron. | A GY-302 BH1750 sold with the pins already soldered. |
 | Miracle-Gro All Purpose Garden Soil | <img src="photos/parts/16-garden-soil.jpg" alt="Miracle-Gro All Purpose Garden Soil" width="200"> | It's made to mix into garden beds, not to fill a container. In a box it packs down and drains slowly, which stunts radish roots and keeps the soil readings high. | A potting mix labeled for container plants. |
-| Soil sensor wiring | | The AOUT wire was on ESP32 pin 32, but the sketch reads pin 34, so the soil reading stayed near 0 in the Serial Monitor test. | AOUT on pin 34. The reading jumped to about 3190 in dry air and dropped when the sensor was gripped. |
+| Soil sensor wiring | <img src="photos/build/soil-wire-wrong-pin.jpg" alt="Soil sensor's yellow AOUT wire plugged into the wrong ESP32 pin" width="200"> | The AOUT wire was on ESP32 pin 32, but the sketch reads pin 34, so the soil reading stayed near 0 in the Serial Monitor test. | AOUT on pin 34. The reading jumped to about 3190 in dry air and dropped when the sensor was gripped. |
 
 ## Credits
 
